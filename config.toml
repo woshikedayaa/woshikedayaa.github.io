@@ -1,4 +1,4 @@
-baseURL = 'https://woshikedayaa.github.io/hugo-blog'
+baseURL = 'https://woshikedayaa.github.io/'
 languageCode = 'zh-cn'
 title = 'woshikedayaa的博客'
 theme = "hugo-ficurinia"
