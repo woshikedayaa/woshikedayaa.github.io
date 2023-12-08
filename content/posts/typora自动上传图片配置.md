@@ -2,6 +2,8 @@
 title: "Typora自动上传图片配置"
 date: 2023-12-08T17:47:35+08:00
 draft: true
+tags:
+ - tool
 ---
 # 准备
 pic-go zh官网:https://picgo.github.io/PicGo-Doc/zh/  
@@ -10,7 +12,7 @@ github:https://github.com
 
 # 开始
 准备一个github仓库 用于上传图片  
-注:要设置成public(这样别人才能访问)  
+**注:要设置成public(这样别人才能访问)**  
 
 其中的token需要自己去找方法生成一个
 
