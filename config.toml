@@ -1,6 +1,6 @@
 baseURL = 'https://blog.woshikedayaa.cn/'
 languageCode = 'zh-cn'
-title = "woshikedayaa's house"
+title = "woshikedayaa's little house"
 theme = "hugo-ficurinia"
 [params]
 	author = "woshikedayaa"
