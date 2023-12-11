@@ -68,7 +68,7 @@ $ etcdctl --endpoints=127.0.0.1:23792 get /name1 /name3
 n1
 /name2
 n2
-# prefix表示获取以什么开头的键
+# --prefix 表示获取以什么开头的键
 $ etcdctl --endpoints=127.0.0.1:23792 get --prefix /name
 /name1
 n1
@@ -136,7 +136,7 @@ watch来监测一个值是否改变改变就会输出最新的值
 ```bash
 $ etcdctl --endpoints=127.0.0.1:23792 put /watch1 1
 OK
-# 这里去另一个集群watch来验证集群的同步
+# 这里去另一个集群watch来验证集群的同步 watch
 $ etcdctl --endpoints=127.0.0.1:23791 watch /watch1
 # 这个时候我们再开一个终端来更新这个值
 $ etcdctl --endpoints=127.0.0.1:23792 put /watch1 11
@@ -151,23 +151,23 @@ lease(租约) 类似于redis的expire 主要是赋予一个键的过期时间
 附:**租约原理**:https://segmentfault.com/a/1190000021787065
 
 ```bash
-# 这里赋予一个租约 30s
+# 这里赋予一个租约 30s lease grant
 $ etcdctl --endpoints=127.0.0.1:23792 lease grant 30
 lease 41ce8c579a16e015 granted with TTL(30s)
-# 查看租约信息
+# 查看租约信息 lease timetolive
 $ etcdctl --endpoints=127.0.0.1:23792 lease timetolive 41ce8c579a16e015
 lease 41ce8c579a16e015 granted with TTL(200s), remaining(183s)
-# 绑定到键
+# 绑定到键 --lease
 $ etcdctl --endpoints=127.0.0.1:23792 put --lease=41ce8c579a16e015 /watch1 1
 OK
-# 续约 打开续约后终端会阻塞
+# 续约 打开续约后终端会阻塞 lease keep-alive
 $ etcdctl --endpoints=127.0.0.1:23792 lease keep-alive 41ce8c579a16e015
 lease 41ce8c579a16e015 keepalived with TTL(200)
 lease 41ce8c579a16e015 keepalived with TTL(200)
 lease 41ce8c579a16e015 keepalived with TTL(200)
 lease 41ce8c579a16e015 keepalived with TTL(200)
 ^C
-# 撤销 同时删除所有绑定的key
+# 撤销 同时删除所有绑定的key lease revoke
 $ etcdctl --endpoints=127.0.0.1:23792 lease revoke 41ce8c579a16e015
 lease 41ce8c579a16e015 revoked
 ```
@@ -182,14 +182,47 @@ Authentication Status: false
 AuthRevision: 1
 # 可以看到是false
 # 可以使用 auth enable开启权限
-# 不过在开启权限之前我们得先有一个用户
-# 这里拿root来举例 (这里我密码设置为123456)
+# 不过在开启权限之前我们得先有一个用户 user add
+# 这里拿duck来举例
+# root是因为有了root用户权限验证才能启用
+# root是默认获得所有权限
 $ etcdctl --endpoints=127.0.0.1:23791 user add root
-Password of root:
-Type password of root again for confirmation:
-User root created
-# 创建用户过后还要给这个用户一个角色
-$
+$ etcdctl --endpoints=127.0.0.1:23791 user add duck
+Password of duck:
+Type password of duck again for confirmation:
+User duck created
+# 创建用户过后还要给这个用户一个角色 duck是角色名 role add
+$ etcdctl --endpoints=127.0.0.1:23791 role add duck
+Role duck created
+# 给角色给予权限 role grant-permission
+# read->读 write->写 readwrite->读写
+# /name 指这个角色对什么节点有权限 例如 /name就是指对/name这个节点有权限
+$ etcdctl --endpoints=127.0.0.1:23791 role grant-permission duck readwrite /name
+Role duck updated
+# 第一个duck是用户名 第二个duck是角色名
+$ etcdctl --endpoints=127.0.0.1:23791 user grant-role duck duck
+Role duck is granted to user duck
 # 配置过后就可以打开auth了
-
+$ etcdctl --endpoints=127.0.0.1:23791 auth enable
 ```
+配置了需求登录过后 后面的请求都需要带上 **--user**
+
+```bash
+$ etcdctl .... --user=duck
+# 如果不想输入密码 可以在请求中添加--password
+$ etcdctl .... --user=duck --password='pwd'
+```
+
+下面再介绍些管理权限的命令
+```bash
+# 收回对应角色对应节点的权限 role revoke-permission
+$ etcdctl --endpoints=127.0.0.1:23791 role revoke-permission duck /name
+
+# 收回用户的角色 user revoke-role
+# 第一个duck是用户名 第二个duck是角色名
+$ etcdctl --endpoints=127.0.0.1:23791 user revoke-role duck duck
+
+# 查看用户列表 user list
+$ etcdctl --endpoints=127.0.0.1:23791 user list
+```
+
