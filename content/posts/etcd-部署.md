@@ -130,7 +130,7 @@ services:
   
 * 基于etcd的动态模式(常用)
 
-* dns模式
+* xxxxxxxxxx15 1$ etcdctl --endpoints=127.0.0.1:23791 auth status2Authentication Status: false3AuthRevision: 14# 可以看到是false5# 可以使用 auth enable开启权限6# 不过在开启权限之前我们得先有一个用户7# 这里拿root来举例 (这里我密码设置为123456)8$ etcdctl --endpoints=127.0.0.1:23791 user add root9Password of root:10Type password of root again for confirmation:11User root created12# 创建用户过后还要给这个用户一个角色13$14# 配置过后就可以打开auth了15​bash
 
   ## etcd集群发现模式
 
@@ -139,7 +139,7 @@ services:
   Discovery service protocol帮助新的etcd成员使用共享URL在集群引导阶段发现所有其他成员。
   该协议使用新的发现令牌来引导一个唯一的etcd集群。一个发现令牌只能代表一个etcd集群。只要此令牌上的发现协议启动，即使它中途失败，也不能用于引导另一个etcd集群
   
-  **基于etcd服务发现模式有两个方案**
+  xxxxxxxxxx15 1$ etcdctl --endpoints=127.0.0.1:23791 auth status2Authentication Status: false3AuthRevision: 14# 可以看到是false5# 可以使用 auth enable开启权限6# 不过在开启权限之前我们得先有一个用户7# 这里拿root来举例 (这里我密码设置为123456)8$ etcdctl --endpoints=127.0.0.1:23791 user add root9Password of root:10Type password of root again for confirmation:11User root created12# 创建用户过后还要给这个用户一个角色13$14# 配置过后就可以打开auth了15​bash
   
   ### 私有etcd
   
@@ -184,10 +184,6 @@ services:
   # ref : https://blog.csdn.net/qq_30145355/article/details/115468341
   # etcd动态发现配置
   version: "3.0"
-  
-  networks:
-    etcd-net:           # 网络
-      driver: bridge    # 桥接模式
   
   volumes:
     etcd1_data:         # 挂载到本地的数据卷名
@@ -375,5 +371,4 @@ services:
   略 详见：https://www.zhaowenyu.com/etcd-doc/ops/etcd-discovery-dns.html
 
 ​	
-
 
