@@ -2,6 +2,8 @@
 title: "Etcd Ctl使用"
 date: 2023-12-11T17:28:15+08:00
 draft: true
+tags:
+ - etcd
 ---
 
 # 介绍
