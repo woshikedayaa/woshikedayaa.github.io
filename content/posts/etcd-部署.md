@@ -130,23 +130,21 @@ services:
   
 * 基于etcd的动态模式(常用)
 
-* xxxxxxxxxx15 1$ etcdctl --endpoints=127.0.0.1:23791 auth status2Authentication Status: false3AuthRevision: 14# 可以看到是false5# 可以使用 auth enable开启权限6# 不过在开启权限之前我们得先有一个用户7# 这里拿root来举例 (这里我密码设置为123456)8$ etcdctl --endpoints=127.0.0.1:23791 user add root9Password of root:10Type password of root again for confirmation:11User root created12# 创建用户过后还要给这个用户一个角色13$14# 配置过后就可以打开auth了15​bash
-
   ## etcd集群发现模式
 
   ### 实现原理
 
   Discovery service protocol帮助新的etcd成员使用共享URL在集群引导阶段发现所有其他成员。
   该协议使用新的发现令牌来引导一个唯一的etcd集群。一个发现令牌只能代表一个etcd集群。只要此令牌上的发现协议启动，即使它中途失败，也不能用于引导另一个etcd集群
-  
+
   xxxxxxxxxx15 1$ etcdctl --endpoints=127.0.0.1:23791 auth status2Authentication Status: false3AuthRevision: 14# 可以看到是false5# 可以使用 auth enable开启权限6# 不过在开启权限之前我们得先有一个用户7# 这里拿root来举例 (这里我密码设置为123456)8$ etcdctl --endpoints=127.0.0.1:23791 user add root9Password of root:10Type password of root again for confirmation:11User root created12# 创建用户过后还要给这个用户一个角色13$14# 配置过后就可以打开auth了15​bash
-  
+
   ### 私有etcd
-  
+
   **相关文档:https://www.zhaowenyu.com/etcd-doc/ops/etcd-discovery-etcd.html**
-  
+
    一个是先搭建一个私有的etcd 然后将改etcd作为用于发现服务的etcd
-  
+
   ```bash
   $ docker network create etcd-net
   # 假如我先搭建了一个etcd 并且客户端端口为 23790
@@ -175,11 +173,11 @@ services:
   PUT \
   http://127.0.0.1:23790/v2/keys/discovery/0b0bdd00-975c-11ee-9929-00155d636dd2/_config/size -d value=3 
   ```
-  
+
   经过上面操作后就已经在一个私有的etcd注册了一个集群信息
-  
+
   接下来写一个docker-compose.yml来启动其他集群
-  
+
   ```yaml
   # ref : https://blog.csdn.net/qq_30145355/article/details/115468341
   # etcd动态发现配置
@@ -262,21 +260,21 @@ services:
       volumes:
         - etcd3_data:/bitnami/etcd
   ```
-  
+
   注意其中的更改 启动即可启动私有etcd环境下的内容
-  
+
   ### 公共etcd
-  
+
   公共的 discovery 就是通过 CoreOS 提供的公共 discovery 服务申请 token。
-  
+
   ```bash
   $ curl https://discovery.etcd.io/new?size=3
   https://discovery.etcd.io/{uuid}
   # 以上命令会生成一个链接样式的 token，参数 size 代表要创建的集群大小，即: 有多少集群节点。
   ```
-  
+
   然后再基于这个链接来配置compose中的配置
-  
+
   ```yaml
   # ref : https://blog.csdn.net/qq_30145355/article/details/115468341
   # etcd动态发现配置
@@ -363,11 +361,11 @@ services:
       volumes:
         - etcd3_data:/bitnami/etcd
   ```
-  
+
   最后再启动compose即可实现etcd基于动态发现的集群
-  
+
   ## DNS模式
-  
+
   略 详见：https://www.zhaowenyu.com/etcd-doc/ops/etcd-discovery-dns.html
 
 ​	
