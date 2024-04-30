@@ -1,0 +1,156 @@
+{
+  "main": {
+    "id": "6fdb49d0e40e6ff0",
+    "type": "split",
+    "children": [
+      {
+        "id": "4c29692d04fe4361",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bf25af5e24d92585",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "posts/iptables基础使用.md",
+                "mode": "preview",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "d60fda696ca8441b",
+    "type": "split",
+    "children": [
+      {
+        "id": "c72582770ccbeca2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cf43f6c41a6d55f3",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "2d3d6b10af95ddb6",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "8cbe6c10e476ca19",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "c83107e35fe1f287",
+    "type": "split",
+    "children": [
+      {
+        "id": "4cfdd9f566788cbc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bfebb3edc5eade79",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "posts/iptables基础使用.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "b048741a92ab17d6",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "posts/iptables基础使用.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "f8b4dc872cf8c811",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "79e840633258820f",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "posts/iptables基础使用.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false
+    }
+  },
+  "active": "bf25af5e24d92585",
+  "lastOpenFiles": [
+    "![[Pasted.md",
+    "posts/iptables基础使用.md",
+    "Pasted image 20240430123842.png",
+    "posts/reids-集群模式部署.md"
+  ]
+}

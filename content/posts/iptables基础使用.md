@@ -110,111 +110,228 @@ $ iptables [ -t 表名] 命令选项 [链名] [条件匹配] [-j 目标动作或
 
 ## 先看一下help
 ```bash
-$ sudo iptables --help
+$ iptables --help
 iptables v1.8.7
-
+# -ACD 见下文
 Usage: iptables -[ACD] chain rule-specification [options]
+	# 在指定链中插入（--insert）一条新的规则，默认在链的开头插入
 	iptables -I chain [rulenum] rule-specification [options]
+	# 修改、替换（--replace）指定链中的一条规则，按规则序号或内容确定
 	iptables -R chain rulenum rule-specification [options]
+	# 删除（--delete）指定链中的某一条规则，按规则序号或内容确定要删除的规则
 	iptables -D chain rulenum [options]
+	# -L 列出规则链的所有规则
+	# -S 以命令的方式列出
+	# 两者具体差别可以自行试验
 	iptables -[LS] [chain [rulenum]] [options]
+	# -F -Z 都是清除一个链条的所有规则 
+	# 如果没有指定链 则清除这个表的所有规则
 	iptables -[FZ] [chain] [options]
+	# -N 新建一个链
+	# -X 删除一个链条(规则也会被清除)
 	iptables -[NX] chain
+	# 修改（--rename-chain）一个链条的名称 从 old-chain-name 改变到 new-chain-name
+	# 之前指向这个链的规则名字也会跟着变
 	iptables -E old-chain-name new-chain-name
+	# 指定一个链条的默认规则(--policy)
 	iptables -P chain target [options]
+	# ...................................
 	iptables -h (print this help information)
 
-Commands:
+Commands: # 这里我只列出一些没讲到的或者需要细分的
 Either long or short options are allowed.
+  # 追加一个规则到一条链里面
   --append  -A chain		Append to chain
+  # 查看一个规则是否存在
   --check   -C chain		Check for the existence of a rule
+  # 删除一个规则
+  # 第一个方式是指定这个规则的详细
+  # 第二个方式是规则的下标
   --delete  -D chain		Delete matching rule from chain
   --delete  -D chain rulenum
 				Delete rule rulenum (1 = first) from chain
-  --insert  -I chain [rulenum]
-				Insert in chain as rulenum (default 1=first)
+  # 替换对应rulenum为一个新的规则
+  # 不咋用 可以用 -D + -I 来实现
   --replace -R chain rulenum
 				Replace rule rulenum (1 = first) in chain
-  --list    -L [chain [rulenum]]
-				List the rules in a chain or all chains
-  --list-rules -S [chain [rulenum]]
-				Print the rules in a chain or all chains
-  --flush   -F [chain]		Delete all rules in  chain or all chains
-  --zero    -Z [chain [rulenum]]
-				Zero counters in chain or all chains
-  --new     -N chain		Create a new user-defined chain
-  --delete-chain
-	     -X [chain]		Delete a user-defined chain
-  --policy  -P chain target
-				Change policy on chain to target
-  --rename-chain
-	     -E old-chain new-chain
-				Change chain name, (moving any references)
-Options:
+
+	# 这里都是新建(修改)规则的时候会用到
+	Options: # 这里我只列出后面不会讲到的 且有用的
+	# 这两个不用说
     --ipv4	-4		Nothing (line is ignored by ip6tables-restore)
     --ipv6	-6		Error (line is ignored by iptables-restore)
-[!] --proto	-p proto	protocol: by number or name, eg. `tcp'
-[!] --source	-s address[/mask][...]
+    # 指定协议
+    --proto	-p proto	protocol: by number or name, eg. `tcp`
+    # 请求来源 （不填是 anyway ）
+    --source	-s address[/mask][...]
 				source specification
-[!] --destination -d address[/mask][...]
+	# 目标地址
+    --destination -d address[/mask][...]
 				destination specification
-[!] --in-interface -i input name[+]
+	# 这个是说明输入的网口 如果输入不是这个网口就不匹配
+    --in-interface -i input name[+]
 				network interface name ([+] for wildcard)
- --jump	-j target
+	# 选择这个规则如果匹配 选择的 规则链/控制方式
+	# 内置的有
+	# ACCEPT：允许数据包通过。 
+	# DROP：直接丢弃数据包，不给出任何回应信息。 
+	# REJECT：拒绝数据包通过，必须时会给数据发送端一个响应信息。 
+	# LOG：在/var/log/messages 文件中记录日志信息，然后将数据包传递给下一条规则。 
+	# QUEUE：防火墙将数据包移交到用户空间 
+	# RETURN：防火墙停止执行当前链中的后续Rules，并返回到调用链(the calling chain) 
+    --jump	-j target
 				target for rule (may load target extension)
-  --goto      -g chain
-			       jump to chain with no return
-  --match	-m match
+    # 后面详细讲
+    --match	-m match
 				extended match (may load extension)
-  --numeric	-n		numeric output of addresses and ports
-[!] --out-interface -o output name[+]
+	# 输出地址以数字化的输出 例如可以把 localhost 转化成 127.0.0.1
+    --numeric	-n		numeric output of addresses and ports
+    # 这个是说明输出的网口 如果输出不是这个网口就不匹配
+    --out-interface -o output name[+]
 				network interface name ([+] for wildcard)
-  --table	-t table	table to manipulate (default: `filter')
-  --verbose	-v		verbose mode
-  --wait	-w [seconds]	maximum wait to acquire xtables lock before give up
-  --wait-interval -W [usecs]	wait time to try to acquire xtables lock
-				default is 1 second
-  --line-numbers		print line numbers when listing
-  --exact	-x		expand numbers (display exact values)
-[!] --fragment	-f		match second or further fragments only
-  --modprobe=<command>		try to insert modules using this command
-  --set-counters PKTS BYTES	set the counter during insert/append
-[!] --version	-V		print package version.
-```
-## 查
-```bash
-# -L 列出filter表的所有规则(rule)
-$ iptables -L 
+	# 指定表
+    --table	-t table	table to manipulate (default: `filter`)
 
-# -L <chain> 列出filter表的INPUT 链的所有规则
-$ iptables -L INPUT
-
-# -t 列出mangle表的所有规则
-$ iptables -t mangle -L
-
-# -v -vv --verbose 列出mangle表的所有规则(详细)
-$ iptables -t mangle -v -L # 如果需要更加详细 可以使用 -vv
-
-# -n --numeric 列出nat表的所有规则 用数字显示输出结果
-# 显示主机的 IP地址而不是主机名
-$ iptables -t nat -L -n
-
-# --line-number 查看规则列表的同时 显示规则在链中的顺序号 --list-number
-$ iptables -t nat -L -n --list-number 
-
+	# 这两个是查的时候用的
+	# 列出详细信息
+	--verbose	-v		verbose mode
+	# 注：-vv 可以更详细
+	
+	# 列出规则的时候同时列出规则的rulenum
+	--line-numbers		print line numbers when listing
 ```
 
-## 增
-```bash
-# -N 在filter表新增一条名为CUSTOM的规则链 可以通过 iptables -L 列出
-$ iptables -N CUSTOM
+## -m 详解
+条件匹配分为基本匹配和扩展匹配，拓展匹配又分为隐式扩展和显示扩展。
 
-# -A 在filter表的CUSTOM链追加一条规则
-$ iptables -A CUSTOM -j DROP # 关于DROP规则 后文再讲
-
-# -I 在filter表的CUSTOM链在下表为0的位置插入一条规则
-# 如果要在头部插入 1 是可选可不选的 
-# iptables 的rule下标是从 1 开始的 ， 不是从0开始的
-# 如果是插入的话就
-$ iptables -I CUSTOM 1
+基本匹配包括：
+```sh
+-p    指定规则协议，如tcp, udp,icmp等，可以使用all来指定所有协议
+-s    指定数据包的源地址参数，可以使IP地址、网络地址、主机名
+-d    指定目的地址
+-i    输入接口
+-o    输出接口
 ```
+隐式扩展包括：(图片非原创)
+![](https://wooyun.js.org/images_result/images/2014071403584061278.jpg)
+常用显式扩展:(图片非原创)
+![](https://wooyun.js.org/images_result/images/2014071403582276903.jpg)
+
+## 简单使用
+删除iptables现有规则(filter 表)
+```sh
+$ sudo iptables –F 
+```
+
+查看iptables规则(filter 表)
+```sh
+$ sudo iptables -L
+```
+
+增加一条规则到最后
+```sh
+$ sudo iptables -t filter -A INPUT -i eth0 -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# 注 这里其实是有层次关系的
+# - 先指定表 -t filter
+# - 再指定规则链条 -A(-I) INPUT
+# - 再写规则 -i eth0 -p tcp --dport 80 -m state --state NEW,ESTABLISHED
+# - 最后指定如果匹配到了这一条规则 选择的 规则链/控制方式 -j ACCPET
+```
+
+添加一条规则到指定位置
+```sh
+$ sudo iptables -I INPUT 2 -i eth0 -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT 
+```
+
+删除一条规则
+```sh
+$ sudo iptabels -D INPUT 2 
+```
+
+修改一条规则
+```sh
+$ sudo iptables -R INPUT 3 -i eth0 -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT 
+```
+
+设置默认策略
+```sh
+$ sudo iptables -P INPUT DROP 
+```
+
+# 实际应用
+允许远程主机进行SSH连接
+```sh
+$ sudo iptables -A INPUT -i eth0 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT 
+$ sudo iptables -A OUTPUT -o eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT 
+```
+
+允许本地主机进行SSH连接
+```sh
+$ sudo iptables -A OUTPUT -o eth0 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT 
+$ sudo iptables -A INTPUT -i eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT 
+```
+
+允许HTTP请求
+```sh
+$ sudo iptables -A INPUT -i eth0 -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT 
+$ sudo iptables -A OUTPUT -o eth0 -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT 
+```
+
+限制ping 192.168.146.3主机的数据包数，平均2/s个，最多不能超过3个
+```sh
+$ sudo iptables -A INPUT -i eth0 -d 192.168.146.3 -p icmp --icmp-type 8 -m limit --limit 2/second --limit-burst 3 -j ACCEPT 
+```
+
+限制SSH连接速率(默认策略是DROP)
+```sh
+$ sudo iptables -I INPUT 1 -p tcp --dport 22 -d 192.168.146.3 -m state --state ESTABLISHED -j ACCEPT  
+$ sudo iptables -I INPUT 2 -p tcp --dport 22 -d 192.168.146.3 -m limit --limit 2/minute --limit-burst 2 -m state --state NEW -j ACCEPT 
+```
+
+防止syn攻击
+```sh
+# 思路1：限制syn的请求速度（这个方式需要调节一个合理的速度值，不然会影响正常用户的请求）
+$ sudo iptables -N syn-flood 
+
+$ sudo iptables -A INPUT -p tcp --syn -j syn-flood 
+
+$ sudo iptables -A syn-flood -m limit --limit 1/s --limit-burst 4 -j RETURN 
+
+$ sudo iptables -A syn-flood -j DROP 
+# 思路2：限制单个ip的最大syn连接数
+$ sudo iptables –A INPUT –i eth0 –p tcp --syn -m connlimit --connlimit-above 15 -j DROP
+```
+
+防止DOS攻击
+```sh
+# 利用recent模块抵御DOS攻击
+# 单个IP最多连接3个会话
+$ sudo iptables -I INPUT -p tcp -dport 22 -m connlimit --connlimit-above 3 -j DROP 
+
+# 只要是新的连接请求，就把它加入到SSH列表中
+$ sudo iptables -I INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH  
+
+# 5分钟内你的尝试次数达到3次，就拒绝提供SSH列表中的这个IP服务。被限制5分钟后即可恢复访问。
+$ sudo iptables -I INPUT -p tcp --dport 22 -m state NEW -m recent --update --seconds 300 --hitcount 3 --name SSH -j DROP 
+
+```
+防止单个ip访问量过大
+
+```sh
+$ sudo iptables -I INPUT -p tcp --dport 80 -m connlimit --connlimit-above 30 -j DROP 
+```
+
+木马反弹
+
+```sh
+$ sudo iptables –A OUTPUT –m state --state NEW –j DROP 
+```
+
+防止ping攻击
+
+```sh
+$ sudo iptables -A INPUT -p icmp --icmp-type echo-request -m limit --limit 1/m -j ACCEPT 
+```
+
+
