@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/iptables基础使用.md",
+                "file": "share.md",
                 "mode": "preview",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "posts/iptables基础使用.md",
+                "file": "share.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "posts/iptables基础使用.md",
+                "file": "share.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "posts/iptables基础使用.md"
+                "file": "share.md"
               }
             }
           }
@@ -148,8 +148,8 @@
   },
   "active": "bf25af5e24d92585",
   "lastOpenFiles": [
-    "![[Pasted.md",
     "posts/iptables基础使用.md",
+    "![[Pasted.md",
     "Pasted image 20240430123842.png",
     "posts/reids-集群模式部署.md"
   ]

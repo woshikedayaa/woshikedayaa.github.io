@@ -1,7 +1,7 @@
 ---
 title: 好文，好书推荐,不定期更新。
 date: 2023-12-12T18:48:35+08:00
-draft: true
+draft: false
 tags:
   - etcd
   - collection
