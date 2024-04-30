@@ -11,9 +11,9 @@ theme = "hugo-ficurinia"
     # the folder it will look into can be customized with the pages variable
     # in params above
     [[menu.main]]
-        identifier = "about"
-        name = "About"
-        url = "/about/"
+        identifier = "share"
+        name = "Share"
+        url = "/share/"
         weight = 10
     # these links (menu.icons) will be added as icon links below the main nav
     [[menu.icons]]
